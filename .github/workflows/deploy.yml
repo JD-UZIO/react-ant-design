@@ -3,7 +3,10 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches:
-      - main  # Change if you're using a different branch
+      - main  # Trigger deployment on pushes to the main branch
+
+permissions:
+  contents: write  #  Allow GitHub Actions to push changes
 
 jobs:
   deploy:
@@ -11,7 +14,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Updated to latest version
+        with:
+          persist-credentials: false  # Prevents credential issues
+
+      - name: Set up Git credentials
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -24,8 +34,12 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: List build directory (debugging step)
+        run: ls -la build  # Ensure build folder exists
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: main
-          folder: build  # Change to "build" if using Create React App
+          branch: gh-pages  # 🔥 Ensure this deploys to gh-pages, not main
+          folder: build  # Change to "dist" if using Vite
+          token: ${{ secrets.GITHUB_TOKEN }}  # Ensures proper authentication
