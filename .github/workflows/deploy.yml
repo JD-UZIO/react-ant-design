@@ -28,4 +28,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: dist  # Change to "build" if using Create React App
+          folder: build  # Change to "build" if using Create React App
